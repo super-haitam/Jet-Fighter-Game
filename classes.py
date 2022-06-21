@@ -11,6 +11,7 @@ class Jet:
         width = WIDTH/20
 
         self.original_image = pygame.transform.scale(image, (width, width / ratio))
+        self.image = self.original_image
         self.rect = self.original_image.get_rect(x=x, y=HEIGHT/2)
         self.x = x
 
@@ -124,7 +125,7 @@ class Line:
 
 
 class AI_Opponent(Jet):
-    def __init__(self, color_name, color, player, x):
+    def __init__(self, color_name, color, x, player):
         super().__init__(color_name, color, x)
         self.player = player
         self.shoot_time = time.time()
