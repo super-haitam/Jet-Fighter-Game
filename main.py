@@ -2,6 +2,9 @@ from classes import Player, AI_Opponent
 from settings import *
 import pygame
 import time
+import sys
+sys.path.append("game_touches_help")
+from get_game_touches_help_img import CreateImage, get_pygame_img 
 pygame.init()
 
 
@@ -11,15 +14,26 @@ pygame.display.set_caption("Jet Fighter")
 
 # Choice Images
 choice_w = WIDTH/5.5
-player_image = pygame.image.load("assets/player_icon.png")
-player_image = pygame.transform.scale(player_image,
-        (choice_w, choice_w / (player_image.get_width()/player_image.get_height())))
-player_rect = player_image.get_rect(x=WIDTH/5, y=HEIGHT*(2/3))
-robot_image = pygame.image.load("assets/robot_icon.png")
-robot_image = pygame.transform.scale(robot_image,
-        (choice_w, choice_w / (robot_image.get_width()/robot_image.get_height())))
-robot_rect = robot_image.get_rect(x=WIDTH*(4/5)-robot_image.get_width(), y=HEIGHT*(2/3))
+player_choice_img = pygame.image.load("assets/player_icon.png")
+player_choice_img = pygame.transform.scale(player_choice_img,
+        (choice_w, choice_w / (player_choice_img.get_width()/player_choice_img.get_height())))
+player_choice_rect = player_choice_img.get_rect(x=WIDTH/5, y=HEIGHT*(2/3))
+robot_choice_img = pygame.image.load("assets/robot_icon.png")
+robot_choice_img = pygame.transform.scale(robot_choice_img,
+        (choice_w, choice_w / (robot_choice_img.get_width()/robot_choice_img.get_height())))
+robot_choice_rect = robot_choice_img.get_rect(x=WIDTH*(4/5)-robot_choice_img.get_width(), y=HEIGHT*(2/3))
 
+w1, w2 = WIDTH/5, WIDTH/9
+# Player Movement images
+player_turn_img = get_pygame_img(CreateImage(GREY, {"Turn Left/Right": ['a', 'd']}, color=WHITE))
+player_turn_img = pygame.transform.scale(player_turn_img, (w1, w1 / (player_turn_img.get_width()/player_turn_img.get_height())))
+player_shoot_img = get_pygame_img(CreateImage(GREY, {"Shoot": 'z'}, color=WHITE))
+player_shoot_img = pygame.transform.scale(player_shoot_img, (w2, w2 / (player_shoot_img.get_width()/player_shoot_img.get_height())))
+# Opponent Movement images
+opponent_turn_img = get_pygame_img(CreateImage(GREY, {"Turn Left/Right": ['left', 'right']}, color=BLACK))
+opponent_turn_img = pygame.transform.scale(opponent_turn_img, (w1, w1 / (opponent_turn_img.get_width()/opponent_turn_img.get_height())))
+opponent_shoot_img = get_pygame_img(CreateImage(GREY, {"Shoot": 'l'}, color=BLACK))
+opponent_shoot_img = pygame.transform.scale(opponent_shoot_img, (w2, w2 / (opponent_shoot_img.get_width()/opponent_shoot_img.get_height())))
 
 # Game class
 class Game:
@@ -44,15 +58,21 @@ class Game:
     def draw_choice(self):
         screen.fill(GREY)
 
-        font = pygame.font.SysFont("comicsans", 50)
-        txt = font.render("Select a choice", True, WHITE)
-        screen.blit(txt, ((WIDTH-txt.get_width())/2, HEIGHT/3))
+        font = pygame.font.SysFont("comicsans", 55)
+        txt = font.render("Select a choice", True, DARK_GREY)
+        screen.blit(txt, ((WIDTH-txt.get_width())/2, HEIGHT/4))
 
-        screen.blit(player_image, player_rect.topleft)
-        screen.blit(robot_image, robot_rect.topleft)
+        screen.blit(player_choice_img, player_choice_rect.topleft)
+        screen.blit(robot_choice_img, robot_choice_rect.topleft)
 
-        pygame.draw.rect(screen, BLACK, player_rect, width=1)
-        pygame.draw.rect(screen, BLACK, robot_rect, width=1)
+        pygame.draw.rect(screen, BLACK, player_choice_rect, width=1)
+        pygame.draw.rect(screen, BLACK, robot_choice_rect, width=1)
+
+        # Touches Help
+        screen.blit(player_turn_img, (0, HEIGHT/2.6))
+        screen.blit(player_shoot_img, (player_shoot_img.get_width()/3, HEIGHT/2))
+        screen.blit(opponent_turn_img, (WIDTH-opponent_turn_img.get_width(), HEIGHT/2.6))
+        screen.blit(opponent_shoot_img, (WIDTH-opponent_shoot_img.get_width()*(4/3), HEIGHT/2))
 
         pygame.display.flip()
 
@@ -102,12 +122,12 @@ class Game:
 
                 elif event.type == pygame.MOUSEBUTTONDOWN and is_choosing:
                     mouse_x, mouse_y = pygame.mouse.get_pos()
-                    if player_rect.collidepoint(mouse_x, mouse_y):
+                    if player_choice_rect.collidepoint(mouse_x, mouse_y):
                         player_bool = True
                         robot_bool = False
                         is_choosing = False
                         self.opponent = Player("Black", BLACK, WIDTH*(4/5))
-                    if robot_rect.collidepoint(mouse_x, mouse_y):
+                    if robot_choice_rect.collidepoint(mouse_x, mouse_y):
                         player_bool = False
                         robot_bool = True
                         is_choosing = False
@@ -147,7 +167,7 @@ class Game:
                         break
 
             # Winner
-            if max(self.player.score, self.opponent.score) == 1:
+            if max(self.player.score, self.opponent.score) == 10:
                 self.draw()
                 self.draw_winner()
                 time.sleep(2)
