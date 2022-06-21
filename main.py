@@ -1,4 +1,4 @@
-from classes import Player
+from classes import Player, AI_Opponent
 from settings import *
 import pygame
 pygame.init()
@@ -13,8 +13,8 @@ class Game:
     def __init__(self):
         self.clock = pygame.time.Clock()
 
-        self.player = Player("White", WHITE)
-        self.opponent = Player("Black", BLACK)
+        self.player = Player("White", WHITE, WIDTH/5)
+        self.opponent = AI_Opponent("Black", BLACK, self.player, WIDTH*(4/5))
         
     def draw(self):
         screen.fill(GREY)
@@ -44,7 +44,7 @@ class Game:
 
             # Handle Mouvement
             self.player.handle_movement('a', 'd')
-            self.opponent.handle_movement("left", "right")
+            self.opponent.move_AI(screen)
 
             # Collision Player and Bullet
             for player in [self.player, self.opponent]:
