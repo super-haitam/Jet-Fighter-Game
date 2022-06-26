@@ -32,7 +32,7 @@ player_shoot_img = pygame.transform.scale(player_shoot_img, (w2, w2 / (player_sh
 # Opponent Movement images
 opponent_turn_img = get_pygame_img(CreateImage(GREY, {"Turn Left/Right": ['left', 'right']}, color=BLACK))
 opponent_turn_img = pygame.transform.scale(opponent_turn_img, (w1, w1 / (opponent_turn_img.get_width()/opponent_turn_img.get_height())))
-opponent_shoot_img = get_pygame_img(CreateImage(GREY, {"Shoot": 'l'}, color=BLACK))
+opponent_shoot_img = get_pygame_img(CreateImage(GREY, {"Shoot": 'up'}, color=BLACK))
 opponent_shoot_img = pygame.transform.scale(opponent_shoot_img, (w2, w2 / (opponent_shoot_img.get_width()/opponent_shoot_img.get_height())))
 
 # Game class
@@ -136,7 +136,7 @@ class Game:
                 elif event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_z:
                         self.player.shoot()
-                    if event.key == pygame.K_l:
+                    if event.key == pygame.K_UP:
                         self.opponent.shoot()
 
             if not is_started:
