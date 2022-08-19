@@ -136,7 +136,7 @@ class Game:
                 elif event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_z:
                         self.player.shoot()
-                    if event.key == pygame.K_UP:
+                    if event.key == pygame.K_UP and player_bool:
                         self.opponent.shoot()
 
             if not is_started:
